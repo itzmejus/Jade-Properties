@@ -8,7 +8,7 @@ export default function AboutPage() {
             <div className="pt-24 pb-16 px-6">
                 <div className="max-w-4xl mx-auto text-center">
                     <div className="inline-block mb-6 px-6 py-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full text-sm font-semibold">
-                        About Jade Properties
+                        About Jade Properties & Real Estate
                     </div>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
                         Your Trusted Partner in
@@ -87,7 +87,7 @@ export default function AboutPage() {
 
             {/* Why Choose Us */}
             <div className="max-w-7xl mx-auto px-6 py-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">Why Choose Jade Properties?</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">Why Choose Jade Properties & Real Estate?</h2>
                 <div className="grid md:grid-cols-2 gap-6">
                     <div className="flex gap-4 p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 hover:bg-white/15 transition-all shadow-lg">
                         <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
@@ -200,14 +200,14 @@ export default function AboutPage() {
                     <div className="grid md:grid-cols-3 gap-6">
                         <div className="p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 text-center hover:bg-white/15 transition-all shadow-lg">
                             <h4 className="font-bold text-white mb-2">Email</h4>
-                            <a href="mailto:info@jadeproperties.ae" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
-                                info@jadeproperties.ae
+                            <a href="mailto:info@jadeprops.com" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
+                                info@jadeprops.com
                             </a>
                         </div>
                         <div className="p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 text-center hover:bg-white/15 transition-all shadow-lg">
                             <h4 className="font-bold text-white mb-2">Phone</h4>
-                            <a href="tel:+971501234567" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
-                                +971 50 123 4567
+                            <a href="tel:+971508872028" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
+                                +971 50 887 2028
                             </a>
                         </div>
                         <div className="p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 text-center hover:bg-white/15 transition-all shadow-lg">

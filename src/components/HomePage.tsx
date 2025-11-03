@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { MapPin, Search, DollarSign, Bed, Building2, Home, ChevronDown, SlidersHorizontal, ChevronRight, RotateCcw, X } from 'lucide-react';
 
 declare module 'react' {
@@ -18,6 +18,15 @@ const HomePage = () => {
         furnishingStatus: ''
     });
 
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.playbackRate = 2; // Change this value as needed (e.g., 2.0 for double speed)
+        }
+    }, []);
+
+
     const tabs = ['RENT', 'BUY', 'OFF PLAN', 'COMMERCIAL'];
 
     const handleResetFilters = () => {
@@ -35,6 +44,7 @@ const HomePage = () => {
             {/* Video Background */}
             <div className="absolute inset-0 w-full h-full">
                 <video
+                    ref={videoRef}
                     autoPlay
                     loop
                     muted
@@ -42,7 +52,7 @@ const HomePage = () => {
                     className="absolute inset-0 w-full h-full object-cover"
                 >
                     <source
-                        src="/videos/background.mov"
+                        src="/videos/background5.mp4"
                         type="video/mp4"
                     />
                     Your browser does not support the video tag.
@@ -59,7 +69,7 @@ const HomePage = () => {
                         The Journey To Modern Living
                         <br />
                         <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                            Starts Here At Jade Properties
+                            Starts Here At Jade Properties & Real Estate
                         </span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-200 mt-6 max-w-2xl mx-auto">
@@ -76,8 +86,8 @@ const HomePage = () => {
                                 key={tab}
                                 onClick={() => setSelectedTab(tab)}
                                 className={`px-6 md:px-10 py-3 md:py-4 font-semibold text-sm md:text-base rounded-xl transition-all duration-300 transform hover:scale-105 ${selectedTab === tab
-                                        ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-xl shadow-gray-900/50'
-                                        : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/20'
+                                    ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-xl shadow-gray-900/50'
+                                    : 'bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border border-white/20'
                                     }`}
                             >
                                 {tab}

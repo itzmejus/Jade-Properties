@@ -139,11 +139,11 @@ export default function ContactUsPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                                        <a href="tel:+97141234567" className="block text-gray-600 hover:text-blue-600 transition-colors">
-                                            +971 4 123 4567
+                                        <a href="tel:+971508872028" className="block text-gray-600 hover:text-blue-600 transition-colors">
+                                            +971 50 887 2028
                                         </a>
-                                        <a href="tel:+971501234567" className="block text-gray-600 hover:text-blue-600 transition-colors">
-                                            +971 50 123 4567
+                                        <a href="tel:+971508872028" className="block text-gray-600 hover:text-blue-600 transition-colors">
+                                            +971 26 313 564
                                         </a>
                                     </div>
                                 </div>
@@ -154,12 +154,12 @@ export default function ContactUsPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                                        <a href="mailto:info@jadeproperties.ae" className="block text-gray-600 hover:text-purple-600 transition-colors">
-                                            info@jadeproperties.ae
+                                        <a href="mailto:info@jadeprops.com" className="block text-gray-600 hover:text-purple-600 transition-colors">
+                                            info@jadeprops.com
                                         </a>
-                                        <a href="mailto:support@jadeproperties.ae" className="block text-gray-600 hover:text-purple-600 transition-colors">
+                                        {/* <a href="mailto:support@jadeproperties.ae" className="block text-gray-600 hover:text-purple-600 transition-colors">
                                             support@jadeproperties.ae
-                                        </a>
+                                        </a> */}
                                     </div>
                                 </div>
 
@@ -169,8 +169,8 @@ export default function ContactUsPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-gray-900 mb-1">Address</h3>
-                                        <p className="text-gray-600">Dubai Marina</p>
-                                        <p className="text-gray-600">Dubai, UAE</p>
+                                        <p className="text-gray-600">Al Ghaith Tower Hamdan street</p>
+                                        <p className="text-gray-600">Abu Dhabi, UAE</p>
                                     </div>
                                 </div>
                             </div>

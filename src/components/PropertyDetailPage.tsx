@@ -341,7 +341,7 @@ const PropertyDetailPage = () => {
                             <div className="mt-6 pt-6 border-t border-white/20 space-y-3">
                                 <p className="text-gray-400 text-sm text-center mb-4">Or contact us directly</p>
                                 <a
-                                    href="tel:+971501234567"
+                                    href="tel:+971508872028"
                                     className="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200"
                                 >
                                     <div className="w-10 h-10 bg-blue-600/20 border border-blue-400/30 rounded-lg flex items-center justify-center">
@@ -349,11 +349,11 @@ const PropertyDetailPage = () => {
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-400">Call us</p>
-                                        <p className="text-white font-semibold">+971 50 123 4567</p>
+                                        <p className="text-white font-semibold">+971 50 887 2028</p>
                                     </div>
                                 </a>
                                 <a
-                                    href="mailto:info@jadeproperties.ae"
+                                    href="mailto:info@jadeprops.com"
                                     className="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200"
                                 >
                                     <div className="w-10 h-10 bg-purple-600/20 border border-purple-400/30 rounded-lg flex items-center justify-center">
@@ -361,7 +361,7 @@ const PropertyDetailPage = () => {
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-400">Email us</p>
-                                        <p className="text-white font-semibold">info@jadeproperties.ae</p>
+                                        <p className="text-white font-semibold">info@jadeprops.com</p>
                                     </div>
                                 </a>
                             </div>

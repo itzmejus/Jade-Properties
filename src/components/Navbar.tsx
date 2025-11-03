@@ -49,7 +49,7 @@ const Navbar = () => {
               </svg>
             </div>
             <span className="text-xl md:text-2xl font-bold text-white drop-shadow-lg">
-              Jade Properties
+              Jade Properties & Real Estate
             </span>
           </Link>
 

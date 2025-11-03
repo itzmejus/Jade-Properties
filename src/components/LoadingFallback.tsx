@@ -26,7 +26,7 @@ export function BrandedFallback() {
                 {/* Glassy container */}
                 <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-8 py-6 shadow-xl">
                     <h2 className="text-2xl font-bold text-white mb-2">
-                        Jade Properties
+                        Jade Properties & Real Estate
                     </h2>
                     <p className="text-gray-300">
                         Loading your properties...

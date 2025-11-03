@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div>
             <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Jade Properties
+              Jade Properties & Real Estate
             </h3>
             <p className="text-gray-400 text-sm">
               Your trusted partner in finding the perfect property in UAE.
@@ -43,13 +43,13 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold mb-3 text-white">Connect With Us</h4>
             <div className="space-y-2 mb-4">
-              <a href="tel:+971123456789" className="flex items-center text-gray-400 hover:text-blue-400 text-sm transition-colors duration-200">
+              <a href="tel:+971508872028" className="flex items-center text-gray-400 hover:text-blue-400 text-sm transition-colors duration-200">
                 <Phone className="w-4 h-4 mr-2" />
-                +971 12 345 6789
+                +971 50 887 2028
               </a>
-              <a href="mailto:info@jadeproperties.ae" className="flex items-center text-gray-400 hover:text-blue-400 text-sm transition-colors duration-200">
+              <a href="mailto:info@jadeprops.com" className="flex items-center text-gray-400 hover:text-blue-400 text-sm transition-colors duration-200">
                 <Mail className="w-4 h-4 mr-2" />
-                info@jadeproperties.ae
+                info@jadeprops.com
               </a>
             </div>
 
@@ -74,7 +74,7 @@ const Footer = () => {
         {/* Copyright Bar */}
         <div className="pt-6 border-t border-gray-800 text-center">
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Jade Properties. All rights reserved.
+            © {new Date().getFullYear()} Jade Properties & Real Estate. All rights reserved.
           </p>
         </div>
       </div>
