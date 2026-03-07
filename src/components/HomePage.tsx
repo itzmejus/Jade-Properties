@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MapPin, Search, DollarSign, Bed, Building2, Home, ChevronDown, SlidersHorizontal, RotateCcw, X } from 'lucide-react';
 import heroBg from '../assets/Banner1.jpg';
 
@@ -8,7 +9,16 @@ declare module 'react' {
     }
 }
 
+// Tab → listingType metafield value mapping
+const TAB_TO_LISTING_TYPE: Record<string, string> = {
+    'RENT': 'rent',
+    'BUY': 'buy',
+    'OFF PLAN': 'off-plan',
+    'COMMERCIAL': 'commercial',
+};
+
 const HomePage = () => {
+    const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState('RENT');
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
@@ -22,26 +32,48 @@ const HomePage = () => {
     const tabs = ['RENT', 'BUY', 'OFF PLAN', 'COMMERCIAL'];
 
     const handleResetFilters = () => {
-        setFilters({
-            location: '',
-            price: '',
-            bedsBaths: '',
-            propertyType: '',
-            furnishingStatus: ''
-        });
+        setFilters({ location: '', price: '', bedsBaths: '', propertyType: '', furnishingStatus: '' });
+    };
+
+    // Build query string and navigate to AllProperties
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+
+        // Always pass the selected tab as listing type
+        params.set('listingType', TAB_TO_LISTING_TYPE[selectedTab]);
+
+        if (filters.location) params.set('location', filters.location);
+        if (filters.price) params.set('price', filters.price);
+        if (filters.propertyType) params.set('propertyType', filters.propertyType);
+        if (filters.furnishingStatus) params.set('furnishing', filters.furnishingStatus);
+
+        // Map bedsBaths to bedrooms value
+        if (filters.bedsBaths) {
+            const bedsMap: Record<string, string> = {
+                'studio': '0',
+                '1bed-1bath': '1',
+                '2bed-2bath': '2',
+                '3bed-2bath': '3',
+                '4bed-3bath': '4',
+                '5bed+': '5+',
+            };
+            const beds = bedsMap[filters.bedsBaths];
+            if (beds) params.set('bedrooms', beds);
+        }
+
+        navigate(`/properties?${params.toString()}`);
     };
 
     return (
         <div className="relative min-h-screen w-full overflow-hidden">
 
-            {/* ── Image Background ── */}
+            {/* Image Background */}
             <div className="absolute inset-0 w-full h-full">
                 <img
                     src={heroBg}
                     alt="Hero background"
                     className="absolute inset-0 w-full h-full object-cover object-center"
                 />
-                {/* Dark gradient overlay — adjust opacity to taste */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/20" />
             </div>
 
@@ -74,8 +106,8 @@ const HomePage = () => {
                                 key={tab}
                                 onClick={() => setSelectedTab(tab)}
                                 className={`px-7 py-3 text-sm font-bold tracking-widest uppercase rounded-t-xl transition-all duration-200 ${selectedTab === tab
-                                    ? 'bg-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/30'
-                                    : 'bg-white/80 backdrop-blur-sm text-black/60 hover:bg-white hover:text-black border border-white/60'
+                                        ? 'bg-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/30'
+                                        : 'bg-white/80 backdrop-blur-sm text-black/60 hover:bg-white hover:text-black border border-white/60'
                                     }`}
                             >
                                 {tab}
@@ -104,11 +136,15 @@ const HomePage = () => {
                                             placeholder="City, neighborhood, or area..."
                                             value={filters.location}
                                             onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                             className="w-full bg-transparent outline-none text-gray-800 placeholder-gray-300 text-sm font-medium"
                                         />
                                     </div>
                                 </div>
-                                <button className="px-8 py-4 bg-[#D4AF37] hover:bg-[#B8960C] text-black font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#D4AF37]/30 hover:shadow-[#D4AF37]/50 hover:scale-[1.02] active:scale-95">
+                                <button
+                                    onClick={handleSearch}
+                                    className="px-8 py-4 bg-[#D4AF37] hover:bg-[#B8960C] text-black font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#D4AF37]/30 hover:shadow-[#D4AF37]/50 hover:scale-[1.02] active:scale-95"
+                                >
                                     <Search className="w-5 h-5" strokeWidth={2.5} />
                                     Search Properties
                                 </button>
@@ -121,11 +157,10 @@ const HomePage = () => {
                                     className="flex items-center gap-2 text-sm text-gray-900 hover:text-[#B8960C] font-semibold transition-colors duration-200 group"
                                 >
                                     <div className={`p-1.5 rounded-lg transition-all duration-200 ${showFilters ? 'bg-[#FAF0C8]' : 'bg-gray-100 group-hover:bg-[#FDF8E7]'}`}>
-                                        {showFilters ? (
-                                            <X className="w-3.5 h-3.5 text-[#9A7D0A]" strokeWidth={2.5} />
-                                        ) : (
-                                            <SlidersHorizontal className="w-3.5 h-3.5 text-gray-700 group-hover:text-[#B8960C]" strokeWidth={2.5} />
-                                        )}
+                                        {showFilters
+                                            ? <X className="w-3.5 h-3.5 text-[#9A7D0A]" strokeWidth={2.5} />
+                                            : <SlidersHorizontal className="w-3.5 h-3.5 text-gray-700 group-hover:text-[#B8960C]" strokeWidth={2.5} />
+                                        }
                                     </div>
                                     {showFilters ? 'Hide Filters' : 'Advanced Filters'}
                                 </button>
@@ -150,7 +185,7 @@ const HomePage = () => {
                                     {/* Price Range */}
                                     <div>
                                         <label className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">
-                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block"></span>
+                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block" />
                                             <DollarSign className="w-3.5 h-3.5 text-[#B8960C]" />
                                             Price Range
                                         </label>
@@ -161,10 +196,11 @@ const HomePage = () => {
                                                 className="w-full px-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#D4AF37] focus:outline-none focus:bg-white transition-all duration-200 text-gray-700 text-sm appearance-none cursor-pointer font-medium"
                                             >
                                                 <option value="">Any price</option>
-                                                <option value="0-50000">AED 0 – 50,000</option>
-                                                <option value="50000-100000">AED 50K – 100K</option>
-                                                <option value="100000-200000">AED 100K – 200K</option>
-                                                <option value="200000+">AED 200K+</option>
+                                                <option value="0-500000">Under AED 500K</option>
+                                                <option value="500000-1000000">AED 500K – 1M</option>
+                                                <option value="1000000-3000000">AED 1M – 3M</option>
+                                                <option value="3000000-5000000">AED 3M – 5M</option>
+                                                <option value="5000000-">AED 5M+</option>
                                             </select>
                                             <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D4AF37] pointer-events-none" />
                                         </div>
@@ -173,7 +209,7 @@ const HomePage = () => {
                                     {/* Beds & Baths */}
                                     <div>
                                         <label className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">
-                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block"></span>
+                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block" />
                                             <Bed className="w-3.5 h-3.5 text-[#B8960C]" />
                                             Beds & Baths
                                         </label>
@@ -185,10 +221,10 @@ const HomePage = () => {
                                             >
                                                 <option value="">Any</option>
                                                 <option value="studio">Studio</option>
-                                                <option value="1bed-1bath">1 Bed, 1 Bath</option>
-                                                <option value="2bed-2bath">2 Beds, 2 Baths</option>
-                                                <option value="3bed-2bath">3 Beds, 2 Baths</option>
-                                                <option value="4bed-3bath">4 Beds, 3 Baths</option>
+                                                <option value="1bed-1bath">1 Bed</option>
+                                                <option value="2bed-2bath">2 Beds</option>
+                                                <option value="3bed-2bath">3 Beds</option>
+                                                <option value="4bed-3bath">4 Beds</option>
                                                 <option value="5bed+">5+ Beds</option>
                                             </select>
                                             <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D4AF37] pointer-events-none" />
@@ -198,7 +234,7 @@ const HomePage = () => {
                                     {/* Property Type */}
                                     <div>
                                         <label className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">
-                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block"></span>
+                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block" />
                                             <Building2 className="w-3.5 h-3.5 text-[#B8960C]" />
                                             Property Type
                                         </label>
@@ -222,7 +258,7 @@ const HomePage = () => {
                                     {/* Furnishing */}
                                     <div>
                                         <label className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">
-                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block"></span>
+                                            <span className="w-1 h-4 bg-[#D4AF37] rounded-full inline-block" />
                                             <Home className="w-3.5 h-3.5 text-[#B8960C]" />
                                             Furnishing
                                         </label>

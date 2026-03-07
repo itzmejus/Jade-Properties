@@ -1,223 +1,279 @@
 import { useState } from 'react';
-import { MapPin, Bed, Bath, Maximize, Search, SlidersHorizontal } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Search, MapPin, Bed, Bath, Maximize, ChevronDown, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { useProperties, DEFAULT_FILTERS, type PropertyFilters } from '../hooks/useProperties';
+import { formatPrice, getBedroomsLabel, getListingTypeLabel } from '../lib/shopify';
+import { BrandedFallback } from './LoadingFallback';
 
-interface Property {
-    id: number;
-    image: string;
-    title: string;
-    location: string;
-    price: string;
-    beds?: number;
-    baths?: number;
-    area?: string;
-    type?: string;
-    category: string;
+const LISTING_TYPES = [
+    { value: '', label: 'All' },
+    { value: 'rent', label: 'Rent' },
+    { value: 'buy', label: 'Buy' },
+    { value: 'off-plan', label: 'Off Plan' },
+    { value: 'commercial', label: 'Commercial' },
+];
+const PROPERTY_TYPES = [
+    { value: '', label: 'Any Type' },
+    { value: 'apartment', label: 'Apartment' },
+    { value: 'villa', label: 'Villa' },
+    { value: 'townhouse', label: 'Townhouse' },
+    { value: 'penthouse', label: 'Penthouse' },
+    { value: 'studio', label: 'Studio' },
+];
+const BEDROOMS = [
+    { value: '', label: 'Any' },
+    { value: '0', label: 'Studio' },
+    { value: '1', label: '1' },
+    { value: '2', label: '2' },
+    { value: '3', label: '3' },
+    { value: '4', label: '4' },
+    { value: '5+', label: '5+' },
+];
+const FURNISHING = [
+    { value: '', label: 'Any' },
+    { value: 'furnished', label: 'Furnished' },
+    { value: 'semi-furnished', label: 'Semi-Furnished' },
+    { value: 'unfurnished', label: 'Unfurnished' },
+];
+const PRICE_RANGES = [
+    { value: '', label: 'Any Price' },
+    { value: '0-500000', label: 'Under AED 500K' },
+    { value: '500000-1000000', label: 'AED 500K – 1M' },
+    { value: '1000000-3000000', label: 'AED 1M – 3M' },
+    { value: '3000000-5000000', label: 'AED 3M – 5M' },
+    { value: '5000000-', label: 'AED 5M+' },
+];
+
+function parsePriceRange(val: string) {
+    if (!val) return { minPrice: '', maxPrice: '' };
+    const [min, max] = val.split('-');
+    return { minPrice: min ?? '', maxPrice: max ?? '' };
 }
 
-const AllProperties = () => {
-    const [selectedLocation, setSelectedLocation] = useState('All');
-    const [selectedType, setSelectedType] = useState('All');
-    const [searchQuery, setSearchQuery] = useState('');
+export default function AllProperties() {
+    const [searchParams] = useSearchParams();
 
-    const properties: Property[] = [
-        { id: 1, image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800', title: 'Luxury Modern Villa', location: 'Palm Jumeirah', price: 'AED 5,500,000', beds: 4, baths: 5, area: '4,500 sq ft', type: 'Villa', category: 'Dubai' },
-        { id: 2, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800', title: 'Contemporary Apartment', location: 'Downtown Dubai', price: 'AED 2,800,000', beds: 3, baths: 3, area: '2,200 sq ft', type: 'Apartment', category: 'Dubai' },
-        { id: 3, image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800', title: 'Waterfront Penthouse', location: 'Marina', price: 'AED 8,900,000', beds: 5, baths: 6, area: '6,800 sq ft', type: 'Penthouse', category: 'Abu Dhabi' },
-        { id: 4, image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800', title: 'Modern Townhouse', location: 'Arabian Ranches', price: 'AED 3,200,000', beds: 3, baths: 4, area: '3,100 sq ft', type: 'Townhouse', category: 'Dubai' },
-        { id: 5, image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800', title: 'Elegant Studio', location: 'Business Bay', price: 'AED 850,000', beds: 1, baths: 1, area: '650 sq ft', type: 'Studio', category: 'Dubai' },
-        { id: 6, image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800', title: 'Luxury Beach House', location: 'Saadiyat Island', price: 'AED 12,500,000', beds: 6, baths: 7, area: '8,500 sq ft', type: 'Villa', category: 'Abu Dhabi' },
-        { id: 7, image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800', title: 'Sky View Apartment', location: 'Dubai Marina', price: 'AED 2,100,000', beds: 2, baths: 2, area: '1,400 sq ft', type: 'Apartment', category: 'Dubai' },
-        { id: 8, image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800', title: 'Executive Penthouse', location: 'DIFC', price: 'AED 6,700,000', beds: 4, baths: 5, area: '5,200 sq ft', type: 'Penthouse', category: 'Dubai' },
-        { id: 9, image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800', title: 'Garden Villa', location: 'Al Reef', price: 'AED 4,200,000', beds: 5, baths: 6, area: '6,000 sq ft', type: 'Villa', category: 'Abu Dhabi' }
-    ];
+    // Read URL params passed from HomePage search
+    const priceParam = searchParams.get('price') ?? '';
+    const { minPrice, maxPrice } = parsePriceRange(priceParam);
 
-    const locations = ['All', 'Dubai', 'Abu Dhabi'];
-    const propertyTypes = ['All', 'Villa', 'Apartment', 'Penthouse', 'Townhouse', 'Studio'];
-
-    const filteredProperties = properties.filter(property => {
-        const matchesLocation = selectedLocation === 'All' || property.category === selectedLocation;
-        const matchesType = selectedType === 'All' || property.type === selectedType;
-        const matchesSearch = property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            property.location.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesLocation && matchesType && matchesSearch;
+    const [filters, setFilters] = useState<PropertyFilters>({
+        listingType: searchParams.get('listingType') ?? '',
+        location: searchParams.get('location') ?? '',
+        bedrooms: searchParams.get('bedrooms') ?? '',
+        propertyType: searchParams.get('propertyType') ?? '',
+        furnishing: searchParams.get('furnishing') ?? '',
+        minPrice,
+        maxPrice,
     });
+    const [searchInput, setSearchInput] = useState(searchParams.get('location') ?? '');
+    const [priceRange, setPriceRange] = useState(priceParam);
 
-    const selectClass = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-[#D4AF37] focus:bg-white text-black cursor-pointer transition-colors duration-200 appearance-none text-sm";
+    const { properties, allProperties, loading, error } = useProperties(filters);
+
+    const handleSearch = () => setFilters(f => ({ ...f, location: searchInput }));
+    const handlePriceChange = (val: string) => {
+        setPriceRange(val);
+        setFilters(f => ({ ...f, ...parsePriceRange(val) }));
+    };
+    const handleReset = () => {
+        setFilters(DEFAULT_FILTERS);
+        setSearchInput('');
+        setPriceRange('');
+    };
+
+    const hasActiveFilters =
+        filters.listingType || filters.location || filters.minPrice ||
+        filters.bedrooms || filters.propertyType || filters.furnishing;
+
+    if (loading) return <BrandedFallback />;
+    if (error) return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="text-center">
+                <p className="text-red-500 font-semibold mb-2">Failed to load properties</p>
+                <p className="text-gray-400 text-sm">{error}</p>
+            </div>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-24">
-            <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+        <div className="min-h-screen bg-gray-50">
 
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <p className="text-[#B8960C] text-sm font-semibold tracking-widest uppercase mb-3">
-                        Jade Properties & Real Estate
-                    </p>
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-4">
-                        Explore Our Properties
-                    </h1>
-                    <p className="text-gray-800 text-base">
-                        Find your perfect home from our exclusive collection
+            {/* Header */}
+            <div className="bg-white border-b border-gray-200 pt-24 pb-8">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <p className="text-[#B8960C] text-xs font-bold tracking-widest uppercase mb-2">Jade Properties & Real Estate</p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-black mb-1">Explore Our Properties</h1>
+                    <p className="text-gray-500 text-sm">
+                        {properties.length} of {allProperties.length} properties
+                        {filters.listingType && ` · ${getListingTypeLabel(filters.listingType)}`}
                     </p>
                 </div>
+            </div>
 
-                {/* Filters Section */}
-                <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8 shadow-sm">
-                    {/* Gold accent bar */}
-                    <div className="h-1 w-full bg-gradient-to-r from-[#B8960C] via-[#D4AF37] to-[#E5C84A] rounded-full mb-6" />
+            <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
 
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                {/* Filter Panel */}
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+                    <div className="h-1 bg-gradient-to-r from-[#B8960C] via-[#D4AF37] to-[#E5C84A]" />
+                    <div className="p-5 md:p-6">
 
-                        {/* Search Bar */}
-                        <div className="md:col-span-5">
-                            <label className="block text-xs font-semibold text-gray-800 uppercase tracking-wider mb-2">Search Properties</label>
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        {/* Search row */}
+                        <div className="flex flex-col md:flex-row gap-3 mb-5">
+                            <div className="flex items-center flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 focus-within:border-[#D4AF37] focus-within:bg-white transition-all duration-200">
+                                <MapPin className="w-4 h-4 text-[#B8960C] mr-2 flex-shrink-0" />
                                 <input
                                     type="text"
                                     placeholder="Search by name or location..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-[#D4AF37] focus:bg-white text-black placeholder-gray-400 transition-colors duration-200 text-sm"
+                                    value={searchInput}
+                                    onChange={e => setSearchInput(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                                    className="w-full bg-transparent outline-none text-gray-800 placeholder-gray-300 text-sm"
                                 />
                             </div>
-                        </div>
-
-                        {/* Location Filter */}
-                        <div className="md:col-span-3">
-                            <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-800 uppercase tracking-wider mb-2">
-                                <MapPin className="w-3.5 h-3.5 text-[#B8960C]" /> Location
-                            </label>
-                            <div className="relative">
-                                <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className={selectClass}>
-                                    {locations.map(l => <option key={l} value={l}>{l}</option>)}
-                                </select>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className="w-4 h-4 text-[#D4AF37]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Property Type Filter */}
-                        <div className="md:col-span-3">
-                            <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-800 uppercase tracking-wider mb-2">
-                                <SlidersHorizontal className="w-3.5 h-3.5 text-[#B8960C]" /> Property Type
-                            </label>
-                            <div className="relative">
-                                <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)} className={selectClass}>
-                                    {propertyTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                                </select>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className="w-4 h-4 text-[#D4AF37]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Reset Button */}
-                        <div className="md:col-span-1 flex items-end">
-                            <button
-                                onClick={() => { setSelectedLocation('All'); setSelectedType('All'); setSearchQuery(''); }}
-                                className="w-full px-4 py-3 bg-black hover:bg-gray-800 text-[#D4AF37] font-semibold rounded-lg transition-all duration-200 text-sm"
-                            >
-                                Reset
+                            <button onClick={handleSearch} className="px-6 py-3 bg-[#D4AF37] hover:bg-[#B8960C] text-black font-bold rounded-xl text-sm flex items-center gap-2 transition-all">
+                                <Search className="w-4 h-4" /> Search
                             </button>
+                            {hasActiveFilters && (
+                                <button onClick={handleReset} className="px-4 py-3 bg-black text-[#D4AF37] font-semibold rounded-xl text-sm flex items-center gap-2 hover:bg-gray-900 transition-colors">
+                                    <RotateCcw className="w-3.5 h-3.5" /> Reset
+                                </button>
+                            )}
                         </div>
-                    </div>
 
-                    <div className="mt-5 pt-4 border-t border-gray-100 text-gray-800 text-sm">
-                        Showing <span className="font-bold text-black">{filteredProperties.length}</span> of {properties.length} properties
+                        {/* Listing type pills */}
+                        <div className="flex flex-wrap gap-2 mb-5">
+                            {LISTING_TYPES.map(lt => (
+                                <button key={lt.value}
+                                    onClick={() => setFilters(f => ({ ...f, listingType: lt.value }))}
+                                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${filters.listingType === lt.value ? 'bg-[#D4AF37] text-black' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                                    {lt.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Filter dropdowns */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1.5">Price</label>
+                                <div className="relative">
+                                    <select value={priceRange} onChange={e => handlePriceChange(e.target.value)}
+                                        className="w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#D4AF37] focus:outline-none text-gray-700 text-sm appearance-none cursor-pointer font-medium">
+                                        {PRICE_RANGES.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#D4AF37] pointer-events-none" />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1.5">Bedrooms</label>
+                                <div className="flex flex-wrap gap-1">
+                                    {BEDROOMS.map(b => (
+                                        <button key={b.value}
+                                            onClick={() => setFilters(f => ({ ...f, bedrooms: b.value }))}
+                                            className={`px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all ${filters.bedrooms === b.value ? 'bg-[#D4AF37] text-black border-[#D4AF37]' : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-[#D4AF37]/50'}`}>
+                                            {b.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1.5">Property Type</label>
+                                <div className="relative">
+                                    <select value={filters.propertyType} onChange={e => setFilters(f => ({ ...f, propertyType: e.target.value }))}
+                                        className="w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#D4AF37] focus:outline-none text-gray-700 text-sm appearance-none cursor-pointer font-medium">
+                                        {PROPERTY_TYPES.map(pt => <option key={pt.value} value={pt.value}>{pt.label}</option>)}
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#D4AF37] pointer-events-none" />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1.5">Furnishing</label>
+                                <div className="relative">
+                                    <select value={filters.furnishing} onChange={e => setFilters(f => ({ ...f, furnishing: e.target.value }))}
+                                        className="w-full px-3 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#D4AF37] focus:outline-none text-gray-700 text-sm appearance-none cursor-pointer font-medium">
+                                        {FURNISHING.map(fn => <option key={fn.value} value={fn.value}>{fn.label}</option>)}
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#D4AF37] pointer-events-none" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Property Grid */}
-                {filteredProperties.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                        {filteredProperties.map((property) => (
-                            <div
-                                key={property.id}
-                                className="group bg-white border border-gray-200 hover:border-[#D4AF37]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-[#D4AF37]/10 transition-all duration-300 hover:-translate-y-1"
-                            >
-                                {/* Property Image */}
-                                <div className="relative h-60 overflow-hidden">
-                                    <img
-                                        src={property.image}
-                                        alt={property.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-
-                                    {property.type && (
-                                        <div className="absolute top-4 left-4 bg-[#D4AF37] text-black px-3 py-1 rounded-md text-xs font-bold shadow-sm">
-                                            {property.type}
-                                        </div>
-                                    )}
-                                    <div className="absolute top-4 right-4 bg-white/85 backdrop-blur-sm text-black px-3 py-1 rounded-md text-xs font-semibold shadow-sm">
-                                        {property.category}
-                                    </div>
-                                    <div className="absolute bottom-4 left-4">
-                                        <p className="text-white font-bold text-lg drop-shadow-lg">{property.price}</p>
-                                    </div>
-                                </div>
-
-                                {/* Property Details */}
-                                <div className="p-5">
-                                    <h3 className="text-base font-bold text-black mb-2 group-hover:text-[#B8960C] transition-colors duration-200">
-                                        {property.title}
-                                    </h3>
-                                    <div className="flex items-center text-gray-800 mb-4">
-                                        <MapPin className="w-4 h-4 mr-1.5 text-[#B8960C] flex-shrink-0" strokeWidth={2} />
-                                        <span className="text-sm">{property.location}</span>
-                                    </div>
-
-                                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                                        {property.beds && (
-                                            <div className="flex items-center gap-1.5">
-                                                <Bed className="w-4 h-4 text-gray-400" strokeWidth={2} />
-                                                <span className="text-sm text-gray-800">{property.beds} Beds</span>
-                                            </div>
-                                        )}
-                                        {property.baths && (
-                                            <div className="flex items-center gap-1.5">
-                                                <Bath className="w-4 h-4 text-gray-400" strokeWidth={2} />
-                                                <span className="text-sm text-gray-800">{property.baths} Baths</span>
-                                            </div>
-                                        )}
-                                        {property.area && (
-                                            <div className="flex items-center gap-1.5">
-                                                <Maximize className="w-4 h-4 text-gray-400" strokeWidth={2} />
-                                                <span className="text-sm text-gray-800">{property.area}</span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <Link to="/property">
-                                        <button className="mt-5 w-full bg-[#D4AF37] hover:bg-[#B8960C] text-black font-semibold py-3 rounded-lg transition-all duration-200 text-sm shadow-sm hover:shadow-md">
-                                            View Details
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-                        ))}
+                {/* Results grid */}
+                {properties.length === 0 ? (
+                    <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center">
+                        <SlidersHorizontal className="w-10 h-10 text-gray-300 mx-auto mb-4" />
+                        <h3 className="text-lg font-bold text-black mb-1">No Properties Found</h3>
+                        <p className="text-gray-400 text-sm mb-5">Try adjusting your filters or search query</p>
+                        <button onClick={handleReset} className="px-5 py-2.5 bg-black text-[#D4AF37] font-semibold rounded-xl text-sm hover:bg-gray-900 transition-colors">
+                            Clear All Filters
+                        </button>
                     </div>
                 ) : (
-                    <div className="text-center py-16">
-                        <div className="bg-white border border-gray-200 rounded-2xl p-12 shadow-sm">
-                            <MapPin className="w-12 h-12 text-gray-800 mx-auto mb-4" />
-                            <h3 className="text-xl font-bold text-black mb-2">No Properties Found</h3>
-                            <p className="text-gray-800 text-sm mb-6">Try adjusting your filters or search query</p>
-                            <button
-                                onClick={() => { setSelectedLocation('All'); setSelectedType('All'); setSearchQuery(''); }}
-                                className="px-8 py-3 bg-[#D4AF37] hover:bg-[#B8960C] text-black font-semibold rounded-lg transition-all duration-200 text-sm"
-                            >
-                                Clear All Filters
-                            </button>
-                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {properties.map(property => {
+                            const heroImage = property.images.edges[0]?.node.url
+                                ?? 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800';
+                            const price = property.priceRange.minVariantPrice.amount;
+                            return (
+                                <div key={property.id} className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#D4AF37]/40 transition-all duration-300 group">
+                                    <div className="relative h-52 overflow-hidden">
+                                        <img src={heroImage} alt={property.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        {property.listingType && (
+                                            <span className="absolute top-3 left-3 bg-[#D4AF37] text-black text-xs font-bold px-3 py-1 rounded-full">
+                                                {getListingTypeLabel(property.listingType)}
+                                            </span>
+                                        )}
+                                        {property.propertyType && (
+                                            <span className="absolute top-3 right-3 bg-white/85 backdrop-blur-sm text-black text-xs font-semibold px-2.5 py-1 rounded-full capitalize">
+                                                {property.propertyType}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="p-5">
+                                        <h3 className="font-bold text-black text-base mb-1 group-hover:text-[#B8960C] transition-colors line-clamp-1">{property.title}</h3>
+                                        {property.location && (
+                                            <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-3">
+                                                <MapPin className="w-3.5 h-3.5 text-[#B8960C] flex-shrink-0" />
+                                                <span className="line-clamp-1">{property.location}</span>
+                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                                            {property.bedrooms !== null && (
+                                                <div className="flex items-center gap-1">
+                                                    <Bed className="w-4 h-4 text-[#B8960C]" />
+                                                    <span className="font-medium">{getBedroomsLabel(property.bedrooms)}</span>
+                                                </div>
+                                            )}
+                                            {property.bathrooms !== null && (
+                                                <div className="flex items-center gap-1">
+                                                    <Bath className="w-4 h-4 text-[#B8960C]" />
+                                                    <span className="font-medium">{property.bathrooms}</span>
+                                                </div>
+                                            )}
+                                            {property.areaSqft && (
+                                                <div className="flex items-center gap-1">
+                                                    <Maximize className="w-4 h-4 text-[#B8960C]" />
+                                                    <span className="font-medium">{property.areaSqft}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                                            <p className="text-[#B8960C] font-bold text-lg">{formatPrice(price)}</p>
+                                            <Link to={`/properties/${property.handle}`}
+                                                className="px-4 py-2 bg-black text-[#D4AF37] text-xs font-bold rounded-lg hover:bg-gray-900 transition-colors">
+                                                View Details
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>
         </div>
     );
-};
-
-export default AllProperties;
+}
