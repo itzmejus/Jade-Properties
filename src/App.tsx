@@ -6,11 +6,13 @@ import { BrandedFallback } from './components/LoadingFallback';
 import { initializeAuth } from './slices/authSlice';
 import HomeContainer from './components/HomeContainer';
 import PropertyDetailPage from './components/PropertyDetailPage';
+import OurServices from './pages/OurServices';
+import ScrollToTop from './components/ScrollToTop';
+import { WhatsAppButton } from './components/WhatsAppButton';
 
 const Footer = lazy(() => import('./components/Footer'));
 const Navbar = lazy(() => import('./components/Navbar'));
 const ContactUsPage = lazy(() => import('./components/ContactUs'));
-const FallbackPage = lazy(() => import('./components/FallBackPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const AboutPage = lazy(() => import('./pages/AboutUs'));
@@ -26,6 +28,7 @@ function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<BrandedFallback />}>
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path='/' element={<HomeContainer />} />
@@ -38,12 +41,13 @@ function App() {
 
 
 
-          <Route path='/tours' element={<FallbackPage />} />
-          <Route path='/transfers' element={<FallbackPage />} />
-          <Route path='/services' element={<FallbackPage />} />
-          <Route path='*' element={<FallbackPage />} />
+          <Route path='/tours' element={<BrandedFallback />} />
+          <Route path='/transfers' element={<BrandedFallback />} />
+          <Route path='/services' element={<OurServices />} />
+          <Route path='*' element={<BrandedFallback />} />
         </Routes>
         <Footer />
+        <WhatsAppButton />
       </Suspense>
     </BrowserRouter>
   );

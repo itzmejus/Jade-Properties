@@ -1,45 +1,71 @@
+import Logo from '../assets/Logo.png';
+
 export function BrandedFallback() {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-800 to-gray-900">
-            <div className="text-center">
-                {/* Property/Home themed icon animation */}
-                <div className="relative w-24 h-24 mx-auto mb-6">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <svg
-                            className="w-16 h-16 text-blue-400 animate-bounce"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                            />
-                        </svg>
+        <div className="flex items-center justify-center min-h-screen bg-gray-950 overflow-hidden">
+
+            {/* Ambient background glows */}
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-1/2 w-64 h-64 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative text-center px-6">
+
+                {/* Logo with rings */}
+                <div className="relative w-28 h-28 mx-auto mb-10 flex items-center justify-center">
+                    {/* Outer slow pulse ring */}
+                    <div className="absolute inset-0 rounded-full border border-yellow-400/15 animate-ping" style={{ animationDuration: '2.5s' }} />
+                    {/* Middle ring */}
+                    <div className="absolute inset-3 rounded-full border border-yellow-400/20 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.4s' }} />
+                    {/* Static outer circle */}
+                    <div className="absolute inset-0 rounded-full border border-yellow-400/10" />
+                    {/* Logo container */}
+                    <div className="relative ">
+                        <img
+                            src={Logo}
+                            alt="Jade Properties Logo"
+                            className="h-16 w-auto object-contain"
+                        />
                     </div>
-                    <div className="absolute inset-0 border-4 border-blue-500/30 rounded-full animate-ping"></div>
-                    <div className="absolute inset-0 border-4 border-purple-500/20 rounded-full animate-pulse"></div>
                 </div>
 
-                {/* Glassy container */}
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-8 py-6 shadow-xl">
-                    <h2 className="text-2xl font-bold text-white mb-2">
-                        Jade Properties & Real Estate
-                    </h2>
-                    <p className="text-gray-300">
-                        Loading your properties...
-                    </p>
+                {/* Brand name */}
+                <p className="text-yellow-400 text-xs font-bold tracking-[0.3em] uppercase mb-3">
+                    Jade Properties & Real Estate
+                </p>
 
-                    {/* Loading dots animation */}
-                    <div className="flex justify-center gap-2 mt-4">
-                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                {/* Main message */}
+                <h2 className="text-2xl font-bold text-white mb-1">
+                    Loading your properties
+                </h2>
+                <p className="text-gray-500 text-sm mb-10">
+                    Preparing the finest listings for you...
+                </p>
+
+                {/* Progress bar */}
+                <div className="w-56 mx-auto mb-8">
+                    <div className="h-0.5 bg-gray-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-yellow-500 to-yellow-300 rounded-full animate-progress" />
                     </div>
+                </div>
+
+                {/* Loading dots */}
+                <div className="flex justify-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1s' }} />
+                    <div className="w-1.5 h-1.5 bg-yellow-400/70 rounded-full animate-bounce" style={{ animationDelay: '180ms', animationDuration: '1s' }} />
+                    <div className="w-1.5 h-1.5 bg-yellow-400/40 rounded-full animate-bounce" style={{ animationDelay: '360ms', animationDuration: '1s' }} />
                 </div>
             </div>
+
+            <style>{`
+                @keyframes progress {
+                    0% { width: 0%; margin-left: 0%; }
+                    50% { width: 70%; margin-left: 10%; }
+                    100% { width: 0%; margin-left: 100%; }
+                }
+                .animate-progress {
+                    animation: progress 1.8s ease-in-out infinite;
+                }
+            `}</style>
         </div>
     );
 }

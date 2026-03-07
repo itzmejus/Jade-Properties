@@ -1,59 +1,71 @@
-import { Link } from 'react-router-dom';
-import { Home, Search } from 'lucide-react';
+import Logo from '../assets/Logo.png';
 
-export default function FallbackPage() {
+export function BrandedFallback() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-6">
-            <div className="max-w-2xl mx-auto text-center">
-                {/* 404 Illustration */}
-                <div className="mb-8">
-                    <div className="text-9xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
-                        404
+        <div className="flex items-center justify-center min-h-screen bg-gray-50 overflow-hidden">
+
+            {/* Ambient background glows */}
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#D4AF37]/8 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-1/2 w-64 h-64 bg-[#D4AF37]/6 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative text-center px-6">
+
+                {/* Logo with rings */}
+                <div className="relative w-28 h-28 mx-auto mb-10 flex items-center justify-center">
+                    {/* Outer slow pulse ring */}
+                    <div className="absolute inset-0 rounded-full border border-[#D4AF37]/25 animate-ping" style={{ animationDuration: '2.5s' }} />
+                    {/* Middle ring */}
+                    <div className="absolute inset-3 rounded-full border border-[#D4AF37]/30 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.4s' }} />
+                    {/* Static outer circle */}
+                    <div className="absolute inset-0 rounded-full border border-[#D4AF37]/20" />
+                    {/* Logo container */}
+                    <div className="relative z-10 w-20 h-20 bg-white border border-[#D4AF37]/30 rounded-2xl flex items-center justify-center shadow-xl shadow-[#D4AF37]/15">
+                        <img
+                            src={Logo}
+                            alt="Jade Properties Logo"
+                            className="h-14 w-auto object-contain"
+                        />
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="bg-white rounded-3xl shadow-2xl p-12">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                        Page Coming Soon!
-                    </h1>
-                    <p className="text-xl text-gray-600 mb-8">
-                        We're working hard to bring you this page. In the meantime, explore our other amazing offerings.
-                    </p>
+                {/* Brand name */}
+                <p className="text-[#B8960C] text-xs font-bold tracking-[0.3em] uppercase mb-3">
+                    Jade Properties & Real Estate
+                </p>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
-                            to="/"
-                            className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-colors"
-                        >
-                            <Home className="w-5 h-5" />
-                            Go to Homepage
-                        </Link>
-                        <Link
-                            to="/contact"
-                            className="inline-flex items-center justify-center gap-2 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-900 font-semibold px-8 py-4 rounded-full transition-colors"
-                        >
-                            <Search className="w-5 h-5" />
-                            Contact Us
-                        </Link>
+                {/* Main message */}
+                <h2 className="text-2xl font-bold text-black mb-1">
+                    Loading your properties
+                </h2>
+                <p className="text-gray-400 text-sm mb-10">
+                    Preparing the finest listings for you...
+                </p>
+
+                {/* Progress bar */}
+                <div className="w-56 mx-auto mb-8">
+                    <div className="h-0.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[#B8960C] to-[#E5C84A] rounded-full animate-progress" />
                     </div>
                 </div>
 
-                {/* Quick Links */}
-                <div className="mt-8 text-gray-600">
-                    <p className="mb-4">Or try these pages:</p>
-                    <div className="flex flex-wrap gap-3 justify-center">
-                        <Link to="/" className="hover:text-blue-600 transition-colors">
-                            Home
-                        </Link>
-                        <span>•</span>
-                        <Link to="/contact" className="hover:text-blue-600 transition-colors">
-                            Contact
-                        </Link>
-                    </div>
+                {/* Loading dots */}
+                <div className="flex justify-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1s' }} />
+                    <div className="w-1.5 h-1.5 bg-[#D4AF37]/70 rounded-full animate-bounce" style={{ animationDelay: '180ms', animationDuration: '1s' }} />
+                    <div className="w-1.5 h-1.5 bg-[#D4AF37]/40 rounded-full animate-bounce" style={{ animationDelay: '360ms', animationDuration: '1s' }} />
                 </div>
             </div>
+
+            <style>{`
+                @keyframes progress {
+                    0% { width: 0%; margin-left: 0%; }
+                    50% { width: 70%; margin-left: 10%; }
+                    100% { width: 0%; margin-left: 100%; }
+                }
+                .animate-progress {
+                    animation: progress 1.8s ease-in-out infinite;
+                }
+            `}</style>
         </div>
     );
 }

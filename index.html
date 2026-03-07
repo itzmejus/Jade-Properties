@@ -3,15 +3,78 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+  <!-- Primary SEO -->
+  <title>Jade Properties & Real Estate | Buy, Sell & Rent Properties in UAE</title>
+  <meta name="description"
+    content="Jade Properties & Real Estate helps you buy, sell, and rent premium properties across Dubai and Abu Dhabi. Trusted agents, verified listings, and 24/7 support." />
+  <meta name="keywords"
+    content="Jade Properties UAE, real estate UAE, buy property Dubai, rent property Abu Dhabi, UAE real estate agents, property investment UAE" />
+  <meta name="author" content="Jade Properties & Real Estate" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Canonical (IMPORTANT: replace with your real domain) -->
+  <link rel="canonical" href="https://jadeprops.com/" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./src/assets/Logo.png" />
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title"
+    content="Jade Properties & Real Estate | Trusted UAE Property Experts" />
+  <meta property="og:description"
+    content="Find, buy, or rent exceptional properties across the UAE with Jade Properties. Verified listings and expert guidance." />
+  <meta property="og:url" content="https://jadeprops.com/" />
+  <meta property="og:site_name" content="Jade Properties & Real Estate" />
+  <meta property="og:image" content="https://jadeprops.com/og-image.jpg" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title"
+    content="Jade Properties & Real Estate | UAE Property Experts" />
+  <meta name="twitter:description"
+    content="Buy, sell, and rent premium UAE properties with trusted real estate experts." />
+  <meta name="twitter:image" content="https://jadeprops.com/og-image.jpg" />
+
+  <!-- Geo / Local SEO -->
+  <meta name="geo.region" content="AE" />
+  <meta name="geo.placename" content="Abu Dhabi, Dubai" />
+  <meta name="geo.position" content="24.4539;54.3773" />
+  <meta name="ICBM" content="24.4539, 54.3773" />
+
+  <!-- Tailwind -->
   <link href="https://unpkg.com/tailwindcss@1.9.6/dist/tailwind.min.css" rel="stylesheet">
-  <title>excursion-app</title>
+
+  <!-- Structured Data (VERY GOOD for SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Jade Properties & Real Estate",
+    "url": "https://jadeprops.com",
+    "logo": "https://jadeprops.com/logo.png",
+    "email": "info@jadeprops.com",
+    "telephone": "+971508872028",
+    "areaServed": "United Arab Emirates",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "AE"
+    },
+    "sameAs": []
+  }
+  </script>
 </head>
 
 <body>
   <div id="root"></div>
+
+  <!-- Tailwind CDN (keep only ONE — recommended to remove this if using build Tailwind) -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

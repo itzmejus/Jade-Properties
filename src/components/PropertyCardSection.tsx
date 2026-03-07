@@ -14,18 +14,14 @@ interface Property {
 }
 
 const PropertyCardSection = () => {
-    // Sample property data - replace with your actual data
     const properties: Property[] = [
         {
             id: 1,
             image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
             title: 'Luxury Modern Villa',
             location: 'Palm Jumeirah, Dubai',
-            price: 'AED 5,500,000',
-            beds: 4,
-            baths: 5,
-            area: '4,500 sq ft',
-            type: 'Villa'
+            price: 'AED 5,800,000',
+            beds: 4, baths: 5, area: '4,800 sq ft', type: 'Villa'
         },
         {
             id: 2,
@@ -33,10 +29,7 @@ const PropertyCardSection = () => {
             title: 'Contemporary Apartment',
             location: 'Downtown Dubai',
             price: 'AED 2,800,000',
-            beds: 3,
-            baths: 3,
-            area: '2,200 sq ft',
-            type: 'Apartment'
+            beds: 3, baths: 3, area: '2,200 sq ft', type: 'Apartment'
         },
         {
             id: 3,
@@ -44,10 +37,7 @@ const PropertyCardSection = () => {
             title: 'Waterfront Penthouse',
             location: 'Marina, Abu Dhabi',
             price: 'AED 8,900,000',
-            beds: 5,
-            baths: 6,
-            area: '6,800 sq ft',
-            type: 'Penthouse'
+            beds: 5, baths: 6, area: '6,800 sq ft', type: 'Penthouse'
         },
         {
             id: 4,
@@ -55,10 +45,7 @@ const PropertyCardSection = () => {
             title: 'Modern Townhouse',
             location: 'Arabian Ranches, Dubai',
             price: 'AED 3,200,000',
-            beds: 3,
-            baths: 4,
-            area: '3,100 sq ft',
-            type: 'Townhouse'
+            beds: 3, baths: 4, area: '3,100 sq ft', type: 'Townhouse'
         },
         {
             id: 5,
@@ -66,33 +53,31 @@ const PropertyCardSection = () => {
             title: 'Elegant Studio',
             location: 'Business Bay, Dubai',
             price: 'AED 850,000',
-            beds: 1,
-            baths: 1,
-            area: '650 sq ft',
-            type: 'Studio'
+            beds: 1, baths: 1, area: '650 sq ft', type: 'Studio'
         },
         {
             id: 6,
             image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
             title: 'Luxury Beach House',
             location: 'Saadiyat Island, Abu Dhabi',
-            price: 'AED 12,500,000',
-            beds: 6,
-            baths: 7,
-            area: '8,500 sq ft',
-            type: 'Villa'
+            price: 'AED 12,800,000',
+            beds: 6, baths: 7, area: '8,800 sq ft', type: 'Villa'
         }
     ];
 
     return (
-        <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-gray-800 to-gray-900">
+        <section className="py-16 px-4 md:px-8 bg-gray-50">
             <div className="max-w-7xl mx-auto">
+
                 {/* Section Header */}
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+                    <p className="text-[#B8960C] text-sm font-semibold tracking-widest uppercase mb-3">
+                        Jade Properties & Real Estate
+                    </p>
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-4">
                         Featured Properties
                     </h2>
-                    <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+                    <p className="text-gray-800 max-w-xl mx-auto text-black">
                         Discover our handpicked selection of exceptional properties in prime locations
                     </p>
                 </div>
@@ -102,70 +87,66 @@ const PropertyCardSection = () => {
                     {properties.map((property) => (
                         <div
                             key={property.id}
-                            className="group bg-gray-700 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                            className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/15 transition-all duration-300 hover:-translate-y-1 border border-gray-200 hover:border-[#D4AF37]/40"
                         >
                             {/* Property Image */}
-                            <div className="relative h-64 overflow-hidden">
+                            <div className="relative h-60 overflow-hidden">
                                 <img
                                     src={property.image}
                                     alt={property.title}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-800"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
 
                                 {/* Property Type Badge */}
                                 {property.type && (
-                                    <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1.5 rounded-lg text-sm font-semibold shadow-lg">
+                                    <div className="absolute top-4 left-4 bg-[#D4AF37] text-black px-3 py-1 rounded-md text-xs font-bold">
                                         {property.type}
                                     </div>
                                 )}
 
                                 {/* Price Tag */}
-                                <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg">
-                                    <p className="text-xl font-bold text-gray-900">{property.price}</p>
+                                <div className="absolute bottom-4 left-4">
+                                    <p className="text-lg font-bold text-white drop-shadow-lg">{property.price}</p>
                                 </div>
                             </div>
 
                             {/* Property Details */}
-                            <div className="p-6">
-                                {/* Title */}
-                                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-300">
+                            <div className="p-5">
+                                <h3 className="text-lg font-bold text-black mb-2 group-hover:text-[#B8960C] transition-colors duration-200">
                                     {property.title}
                                 </h3>
 
-                                {/* Location */}
-                                <div className="flex items-center text-gray-300 mb-4">
-                                    <MapPin className="w-4 h-4 mr-2 text-blue-400" strokeWidth={2} />
+                                <div className="flex items-center text-gray-800 mb-4">
+                                    <MapPin className="w-4 h-4 mr-1.5 text-[#B8960C] flex-shrink-0" strokeWidth={2} />
                                     <span className="text-sm">{property.location}</span>
                                 </div>
 
                                 {/* Property Features */}
-                                <div className="flex items-center justify-between pt-4 border-t border-gray-600">
+                                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                                     {property.beds && (
                                         <div className="flex items-center gap-1.5">
-                                            <Bed className="w-4 h-4 text-gray-400" strokeWidth={2} />
-                                            <span className="text-sm text-gray-300 font-medium">{property.beds} Beds</span>
+                                            <Bed className="w-4 h-4 text-gray-700" strokeWidth={2} />
+                                            <span className="text-sm text-gray-800">{property.beds} Beds</span>
                                         </div>
                                     )}
-
                                     {property.baths && (
                                         <div className="flex items-center gap-1.5">
-                                            <Bath className="w-4 h-4 text-gray-400" strokeWidth={2} />
-                                            <span className="text-sm text-gray-300 font-medium">{property.baths} Baths</span>
+                                            <Bath className="w-4 h-4 text-gray-700" strokeWidth={2} />
+                                            <span className="text-sm text-gray-800">{property.baths} Baths</span>
                                         </div>
                                     )}
-
                                     {property.area && (
                                         <div className="flex items-center gap-1.5">
-                                            <Maximize className="w-4 h-4 text-gray-400" strokeWidth={2} />
-                                            <span className="text-sm text-gray-300 font-medium">{property.area}</span>
+                                            <Maximize className="w-4 h-4 text-gray-700" strokeWidth={2} />
+                                            <span className="text-sm text-gray-800">{property.area}</span>
                                         </div>
                                     )}
                                 </div>
 
                                 {/* View Details Button */}
-                                <Link to={"/property"}>
-                                    <button className="mt-6 w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg">
+                                <Link to="/property">
+                                    <button className="mt-5 w-full bg-[#D4AF37] hover:bg-[#B8960C] text-black font-semibold py-3 rounded-lg transition-all duration-200 text-sm shadow-sm hover:shadow-md">
                                         View Details
                                     </button>
                                 </Link>
@@ -176,9 +157,11 @@ const PropertyCardSection = () => {
 
                 {/* View All Button */}
                 <div className="text-center mt-12">
-                    <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                        View All Properties
-                    </button>
+                    <Link to="/properties">
+                        <button className="px-8 py-3.5 bg-black hover:bg-gray-800 text-[#D4AF37] font-semibold rounded-lg transition-all duration-200 text-sm shadow-lg hover:shadow-xl">
+                            View All Properties
+                        </button>
+                    </Link>
                 </div>
             </div>
         </section>
